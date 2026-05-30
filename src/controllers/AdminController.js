@@ -7,16 +7,22 @@ const loginFunc = async (req, res) => {
             password: req.body.password
         }
 
-        if (!reqData) {
+        if (!reqData.username || !reqData.password) {
             return res.json({ error: 1, message: 'Vui lòng nhập username và password.', data: '' })
         }
 
         let admin = await adminService.handleLogin(reqData)
         if (admin.error === 0) {
-            res.cookie("token_user", admin.data.token, { httpOnly: true, maxAge: process.env.EXPIRES_IN_COOKIES })
+            res.cookie("token_user", admin.data.token, {
+                httpOnly: true,
+                maxAge: Number(process.env.EXPIRES_IN_COOKIES) || 24 * 60 * 60 * 1000,
+                secure: true,
+                sameSite: 'none'  
+            });
         }
         return res.json({ error: admin.error, message: admin.mess, data: admin.data })
     } catch (error) {
+        console.error(">>> Login error: ", error);
         return res.json({ error: 1, message: 'Lỗi server.', data: '' })
     }
 }
