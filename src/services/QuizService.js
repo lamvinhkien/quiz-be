@@ -82,15 +82,37 @@ const handleDeleteQuiz = async (reqData) => {
 
         const questions = await db.Question.findAll({ where: { quizId: quiz.id }, raw: true });
 
+        // local
+        // if (questions && questions.length > 0) {
+        //     for (const question of questions) {
+        //         if (question.image && question.image !== '') {
+        //             const filePath = path.resolve(__dirname, '../public/uploads', question.image);
+        //             try {
+        //                 await fs.unlink(filePath);
+        //             } catch (err) {
+        //                 if (err.code === 'ENOENT') {
+        //                     console.warn('⚠️  File không tồn tại:', filePath);
+        //                 } else {
+        //                     console.error('❌ Lỗi khi xoá file:', err);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+        // render
         if (questions && questions.length > 0) {
             for (const question of questions) {
                 if (question.image && question.image !== '') {
-                    const filePath = path.resolve(__dirname, '../public/uploads', question.image);
+                    const filePath = __dirname.includes('build')
+                        ? path.join(process.cwd(), 'public', 'uploads', question.image)
+                        : path.join(__dirname, '../public/uploads', question.image);
+
                     try {
                         await fs.unlink(filePath);
                     } catch (err) {
                         if (err.code === 'ENOENT') {
-                            console.warn('⚠️  File không tồn tại:', filePath);
+                            console.warn('⚠️ File không tồn tại:', filePath);
                         } else {
                             console.error('❌ Lỗi khi xoá file:', err);
                         }

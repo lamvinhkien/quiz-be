@@ -16,8 +16,22 @@ const handleDeleteQuestion = async (reqData) => {
             };
         }
 
+        // local
+        // if (question.image) {
+        //     const imagePath = path.join(__dirname, '../public/uploads', question.image);
+        //     try {
+        //         await fs.unlink(imagePath);
+        //     } catch (err) {
+        //         console.warn('Không thể xoá ảnh:', err.message);
+        //     }
+        // }
+
+        // render
         if (question.image) {
-            const imagePath = path.join(__dirname, '../public/uploads', question.image);
+            const imagePath = __dirname.includes('build')
+                ? path.join(process.cwd(), 'public', 'uploads', question.image)
+                : path.join(__dirname, '../public/uploads', question.image);
+
             try {
                 await fs.unlink(imagePath);
             } catch (err) {
@@ -88,9 +102,30 @@ const handleUpdateQuestionAndAnswer = async (reqData) => {
         const newAnswers = reqData.listAnswer.map(item => ({ ...item, questionId: question.id }));
         await db.Answer.bulkCreate(newAnswers);
 
+        // local
+        // const hasNewImage = reqData.image && reqData.image !== '';
+        // if ((reqData.imgDelete === 'yes' || hasNewImage) && question.image) {
+        //     const oldImagePath = path.join(__dirname, '../public/uploads', question.image);
+
+        //     try {
+        //         await fs.access(oldImagePath);
+        //         await fs.unlink(oldImagePath);
+        //         console.log(`Đã xoá thành công ảnh cũ: ${question.image}`);
+        //     } catch (err) {
+        //         if (err.code === 'ENOENT') {
+        //             console.log(`Ảnh cũ ${question.image} không tồn tại trên ổ đĩa, bỏ qua.`);
+        //         } else {
+        //             console.warn('Không thể xoá ảnh cũ:', err.message);
+        //         }
+        //     }
+        // }
+
+        // render
         const hasNewImage = reqData.image && reqData.image !== '';
         if ((reqData.imgDelete === 'yes' || hasNewImage) && question.image) {
-            const oldImagePath = path.join(__dirname, '../public/uploads', question.image);
+            const oldImagePath = __dirname.includes('build')
+                ? path.join(process.cwd(), 'public', 'uploads', question.image)
+                : path.join(__dirname, '../public/uploads', question.image);
 
             try {
                 await fs.access(oldImagePath);
