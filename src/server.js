@@ -48,6 +48,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const app = express()
 
+// ping route for free render
+app.get('/ping', (req, res) => {
+  res.status(200).send('Server is alive!');
+});
+
 let uploadDir;
 
 if (__dirname.includes('build')) {
@@ -97,10 +102,6 @@ initAdminRoutes(app)
 initQuestionRoutes(app)
 initAnswerRoutes(app)
 initCategoryRoutes(app)
-
-app.get('/ping', (req, res) => {
-  res.status(200).send('Server is alive!');
-});
 
 const PORT = process.env.PORT || 8000;
 
