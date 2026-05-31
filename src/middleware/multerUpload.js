@@ -2,6 +2,12 @@ const path = require('path')
 const multer = require('multer')
 
 const storage = multer.diskStorage({
+    // local
+    // destination: function (req, file, cb) {
+    //     cb(null, 'src/public/uploads/')
+    // },
+
+    // render
     destination: function (req, file, cb) {
         let uploadDir;
 

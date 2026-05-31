@@ -98,6 +98,10 @@ initQuestionRoutes(app)
 initAnswerRoutes(app)
 initCategoryRoutes(app)
 
+app.get('/ping', (req, res) => {
+  res.status(200).send('Server is alive!');
+});
+
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
